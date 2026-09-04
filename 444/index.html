@@ -96,7 +96,26 @@
         box-shadow: 0 8px 24px rgba(196, 92, 122, 0.35);
         border: 3px solid #fff;
         object-fit: cover;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
         animation: cat-dance ease-in-out infinite;
+        will-change: transform;
+      }
+
+      .cat-gif.drift-a {
+        animation: drift-a linear infinite;
+      }
+
+      .cat-gif.drift-b {
+        animation: drift-b linear infinite;
+      }
+
+      .cat-gif.drift-c {
+        animation: drift-c ease-in-out infinite;
+      }
+
+      .cat-gif.pop-in {
+        animation: pop-in 0.5s ease-out, cat-dance ease-in-out 0.9s infinite 0.5s;
       }
 
       @keyframes fall {
@@ -128,16 +147,70 @@
       @keyframes cat-dance {
         0%,
         100% {
-          transform: translateY(0) rotate(-8deg) scale(1);
+          transform: translate(-50%, -50%) rotate(-12deg) scale(1);
         }
         25% {
-          transform: translateY(-18px) rotate(8deg) scale(1.08);
+          transform: translate(-50%, -58%) rotate(10deg) scale(1.08);
         }
         50% {
-          transform: translateY(6px) rotate(-12deg) scale(0.95);
+          transform: translate(-50%, -44%) rotate(-14deg) scale(0.94);
         }
         75% {
-          transform: translateY(-10px) rotate(14deg) scale(1.05);
+          transform: translate(-50%, -54%) rotate(16deg) scale(1.06);
+        }
+      }
+
+      @keyframes drift-a {
+        0% {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        25% {
+          transform: translate(calc(-50% + 28px), calc(-50% - 22px)) rotate(8deg);
+        }
+        50% {
+          transform: translate(calc(-50% - 18px), calc(-50% + 16px)) rotate(-10deg);
+        }
+        75% {
+          transform: translate(calc(-50% + 12px), calc(-50% + 26px)) rotate(6deg);
+        }
+        100% {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+      }
+
+      @keyframes drift-b {
+        0% {
+          transform: translate(-50%, -50%) rotate(-6deg) scale(1);
+        }
+        33% {
+          transform: translate(calc(-50% - 34px), calc(-50% - 12px)) rotate(12deg) scale(1.05);
+        }
+        66% {
+          transform: translate(calc(-50% + 24px), calc(-50% + 20px)) rotate(-14deg) scale(0.96);
+        }
+        100% {
+          transform: translate(-50%, -50%) rotate(-6deg) scale(1);
+        }
+      }
+
+      @keyframes drift-c {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) rotate(8deg);
+        }
+        50% {
+          transform: translate(calc(-50% + 20px), calc(-50% - 30px)) rotate(-12deg);
+        }
+      }
+
+      @keyframes pop-in {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.2) rotate(-30deg);
+        }
+        100% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1) rotate(0deg);
         }
       }
 
@@ -330,22 +403,7 @@
       }
 
       .cat-row {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 8px;
-        pointer-events: none;
-      }
-
-      .cat-row img {
-        width: 90px;
-        height: 90px;
-        border-radius: 14px;
-        border: 3px solid #fff;
-        box-shadow: 0 6px 16px rgba(196, 92, 122, 0.3);
-        object-fit: cover;
-        animation: cat-dance ease-in-out infinite;
+        display: none;
       }
 
       @media (max-width: 640px) {
@@ -436,14 +494,105 @@
         if (duckStickers[i]) stickers.push(duckStickers[i]);
       }
 
-      const stickerRow = document.getElementById("sticker-row");
-      stickers.slice(0, 8).forEach((src, i) => {
+      const placed = [];
+      const driftClasses = ["drift-a", "drift-b", "drift-c", ""];
+      const minGap = 11;
+
+      function tooClose(left, top) {
+        return placed.some((p) => {
+          const dx = left - p.left;
+          const dy = top - p.top;
+          return Math.sqrt(dx * dx + dy * dy) < minGap;
+        });
+      }
+
+      function randomSpot() {
+        let left = 8 + Math.random() * 84;
+        let top = 6 + Math.random() * 88;
+        let tries = 0;
+        while (tooClose(left, top) && tries < 40) {
+          left = 4 + Math.random() * 92;
+          top = 4 + Math.random() * 92;
+          tries++;
+        }
+        placed.push({ left, top });
+        return { left, top };
+      }
+
+      function addSticker(src, options = {}) {
         const img = document.createElement("img");
+        img.className = "cat-gif";
         img.src = src;
         img.alt = "";
-        img.style.animationDelay = i * 0.15 + "s";
-        stickerRow.appendChild(img);
-      });
+
+        const size = options.size || 55 + Math.random() * 95;
+        const { left, top } = options.position || randomSpot();
+
+        img.style.width = size + "px";
+        img.style.height = size + "px";
+        img.style.left = left + "%";
+        img.style.top = top + "%";
+        img.style.zIndex = String(1 + Math.floor(Math.random() * 4));
+        img.style.opacity = String(0.82 + Math.random() * 0.18);
+        img.style.animationDuration =
+          (0.6 + Math.random() * 1.6) + "s, " + (2.8 + Math.random() * 4.5) + "s";
+        img.style.animationDelay = Math.random() * 2.5 + "s";
+
+        const drift = driftClasses[Math.floor(Math.random() * driftClasses.length)];
+        if (drift) img.classList.add(drift);
+        if (options.popIn) img.classList.add("pop-in");
+
+        catParty.appendChild(img);
+        return img;
+      }
+
+      for (let i = 0; i < 28; i++) {
+        addSticker(stickers[i % stickers.length]);
+      }
+
+      function spawnFromEdge() {
+        const edge = Math.floor(Math.random() * 4);
+        let left;
+        let top;
+
+        if (edge === 0) {
+          left = 2 + Math.random() * 96;
+          top = -4 - Math.random() * 8;
+        } else if (edge === 1) {
+          left = 102 + Math.random() * 8;
+          top = 8 + Math.random() * 84;
+        } else if (edge === 2) {
+          left = 2 + Math.random() * 96;
+          top = 104 + Math.random() * 8;
+        } else {
+          left = -8 - Math.random() * 8;
+          top = 8 + Math.random() * 84;
+        }
+
+        const img = addSticker(stickers[Math.floor(Math.random() * stickers.length)], {
+          size: 50 + Math.random() * 75,
+          position: { left, top },
+          popIn: true,
+        });
+
+        const target = randomSpot();
+        img.style.transition = "left 2.8s ease-out, top 2.8s ease-out, opacity 0.4s ease";
+        requestAnimationFrame(() => {
+          img.style.left = target.left + "%";
+          img.style.top = target.top + "%";
+        });
+
+        setTimeout(() => {
+          img.style.transition = "";
+          setTimeout(() => img.remove(), 5000 + Math.random() * 4000);
+        }, 3000);
+      }
+
+      function scheduleSpawn() {
+        spawnFromEdge();
+        setTimeout(scheduleSpawn, 900 + Math.random() * 700);
+      }
+      scheduleSpawn();
 
       for (let i = 0; i < 22; i++) {
         const petal = document.createElement("span");
@@ -464,36 +613,6 @@
         sparkle.style.animationDelay = Math.random() * 3 + "s";
         sparkles.appendChild(sparkle);
       }
-
-      for (let i = 0; i < 18; i++) {
-        const cat = document.createElement("img");
-        cat.className = "cat-gif";
-        cat.src = stickers[i % stickers.length];
-        cat.alt = "";
-        const size = 70 + Math.random() * 90;
-        cat.style.width = size + "px";
-        cat.style.height = size + "px";
-        cat.style.left = Math.random() * 92 + "%";
-        cat.style.top = Math.random() * 88 + "%";
-        cat.style.animationDuration = 0.7 + Math.random() * 1.4 + "s";
-        cat.style.animationDelay = Math.random() * 2 + "s";
-        catParty.appendChild(cat);
-      }
-
-      setInterval(() => {
-        const cat = document.createElement("img");
-        cat.className = "cat-gif";
-        cat.src = stickers[Math.floor(Math.random() * stickers.length)];
-        cat.alt = "";
-        const size = 60 + Math.random() * 80;
-        cat.style.width = size + "px";
-        cat.style.height = size + "px";
-        cat.style.left = Math.random() * 100 + "%";
-        cat.style.top = "-80px";
-        cat.style.animationDuration = 0.8 + Math.random() * 1.2 + "s";
-        catParty.appendChild(cat);
-        setTimeout(() => cat.remove(), 6000);
-      }, 1200);
     </script>
   </body>
 </html>
