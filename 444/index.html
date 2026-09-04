@@ -290,6 +290,7 @@
       }
 
       .photo-frame::after {
+        content: "🦆";
         top: 10px;
         right: 14px;
       }
@@ -375,12 +376,12 @@
       </div>
       <h1>Happy beginning of our relationship</h1>
       <p class="happy-24">happy 24hrs!!!</p>
-      <p class="subtitle">for a peaceful and calm life (but make it cats)</p>
-      <p class="chaos-banner">🎀 one whole day of us 🎀</p>
+      <p class="subtitle">for a peaceful and calm life (but make it cats & ducks)</p>
+      <p class="chaos-banner">🎀 one whole day of us 🐱🦆</p>
 
       <div class="divider" aria-hidden="true">
         <span></span>
-        🐱✿🐱
+        🐱🦆✿🦆🐱
         <span></span>
       </div>
 
@@ -395,13 +396,7 @@
         </figure>
       </div>
 
-      <div class="cat-row" aria-hidden="true">
-        <img src="https://media.giphy.com/media/JIX9t2j0ZTNnf/giphy.gif" alt="" />
-        <img src="https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif" alt="" />
-        <img src="https://media.giphy.com/media/MDyco4UQFTGT6jqT3L/giphy.gif" alt="" />
-        <img src="https://media.giphy.com/media/ICOgDSYK5E837zPKFi/giphy.gif" alt="" />
-        <img src="https://media.giphy.com/media/13CoXDiaCcGy65sqVA/giphy.gif" alt="" />
-      </div>
+      <div class="cat-row" aria-hidden="true" id="sticker-row"></div>
     </main>
 
     <script>
@@ -409,18 +404,46 @@
       const sparkles = document.querySelector(".sparkles");
       const catParty = document.getElementById("cat-party");
 
-      const catGifs = [
-        "https://media.giphy.com/media/JIX9t2j0ZTNnf/giphy.gif",
-        "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
-        "https://media.giphy.com/media/MDyco4UQFTGT6jqT3L/giphy.gif",
-        "https://media.giphy.com/media/ICOgDSYK5E837zPKFi/giphy.gif",
-        "https://media.giphy.com/media/13CoXDiaCcGy65sqVA/giphy.gif",
-        "https://media.giphy.com/media/5xaocFGfF4PNjyD3Luf/giphy.gif",
-        "https://media.giphy.com/media/GeimqsHUFWMiFqy1f4/giphy.gif",
-        "https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif",
-        "https://media.giphy.com/media/4xpB3eE00FfBm/giphy.gif",
-        "https://media.giphy.com/media/11sBL6PtsDJrOM/giphy.gif",
+      const catStickers = [
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/J8pIanYqwfgZulHkiA/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xcIlI0798VgnPYUQwj/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/uN8sSLW5BLRG03nGUj/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pV0RpkmUZ5UB2/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/iY25xIloX4bkwhcJJG/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/FBTJHH4G7ols5Hj22D/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/PGT5EHSnwpNaD2WtaR/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HsT6Y6dHDJXg67RA8A/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/8jVNLzFZ1JBcYBeOr0/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kvrvnB158J4fm/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3UzbmU0NjgwaTB0d2d3N3E4aHd1NTBzbW8zeWtlZmhmNXNwdWlheCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/6gSoPdYNSLILASEykJ/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjNoMTVhNmZsZzNlNXUzdWlhajB1aG5yZHdweXc2cHc2b3l6YXZ1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/msBAKoAHINITC/giphy.gif",
       ];
+
+      const duckStickers = [
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjNoMTVhNmZsZzNlNXUzdWlhajB1aG5yZHdweXc2cHc2b3l6YXZ1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/8Bkqq19phBmRsZEVks/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjNoMTVhNmZsZzNlNXUzdWlhajB1aG5yZHdweXc2cHc2b3l6YXZ1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/KY5itWvIINKs8/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjNoMTVhNmZsZzNlNXUzdWlhajB1aG5yZHdweXc2cHc2b3l6YXZ1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/6N5xYcINzjEg8/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjNoMTVhNmZsZzNlNXUzdWlhajB1aG5yZHdweXc2cHc2b3l6YXZ1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/q7N5ibuu03RciLizGw/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjNoMTVhNmZsZzNlNXUzdWlhajB1aG5yZHdweXc2cHc2b3l6YXZ1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/8cErh1JVriXOWlspLs/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3djVkOWU3YmNtdHptcXo2MHhwdGltY3NobHg1b2E1cXgwd2xvYXp5aiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/4ktDZ7RX9as4Shmrr6/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3djVkOWU3YmNtdHptcXo2MHhwdGltY3NobHg1b2E1cXgwd2xvYXp5aiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DtJAgycIRLK80/giphy.gif",
+      ];
+
+      const stickers = [];
+      const maxLen = Math.max(catStickers.length, duckStickers.length);
+      for (let i = 0; i < maxLen; i++) {
+        if (catStickers[i]) stickers.push(catStickers[i]);
+        if (duckStickers[i]) stickers.push(duckStickers[i]);
+      }
+
+      const stickerRow = document.getElementById("sticker-row");
+      stickers.slice(0, 8).forEach((src, i) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "";
+        img.style.animationDelay = i * 0.15 + "s";
+        stickerRow.appendChild(img);
+      });
 
       for (let i = 0; i < 22; i++) {
         const petal = document.createElement("span");
@@ -445,7 +468,7 @@
       for (let i = 0; i < 18; i++) {
         const cat = document.createElement("img");
         cat.className = "cat-gif";
-        cat.src = catGifs[i % catGifs.length];
+        cat.src = stickers[i % stickers.length];
         cat.alt = "";
         const size = 70 + Math.random() * 90;
         cat.style.width = size + "px";
@@ -460,7 +483,7 @@
       setInterval(() => {
         const cat = document.createElement("img");
         cat.className = "cat-gif";
-        cat.src = catGifs[Math.floor(Math.random() * catGifs.length)];
+        cat.src = stickers[Math.floor(Math.random() * stickers.length)];
         cat.alt = "";
         const size = 60 + Math.random() * 80;
         cat.style.width = size + "px";
